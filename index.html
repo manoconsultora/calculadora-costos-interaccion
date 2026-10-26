@@ -7,19 +7,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-/* Layout: dos columnas (supuestos | resultado) que se apilan en celular; comparación Meta vs Twilio como protagonista */
+/* Layout: dos columnas (supuestos | resultado) que se apilan en celular */
 :root{
   --bg:#f3f6f5; --surface:#ffffff; --fg:#14211d; --muted:#5b6b66; --line:#d7e0dc;
-  --meta:#0f7a63; --meta-soft:#dcefe9; --twilio:#b4452f; --twilio-soft:#f6e3de; --ia:#6b62b8;
+  --meta:#0f7a63; --meta-soft:#dcefe9; --ia:#6b62b8;
   --font-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-num:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0e1513; --surface:#16201d; --fg:#e4ece9; --muted:#93a39e; --line:#2a3833;
-  --meta:#4cc3a3; --meta-soft:#163a31; --twilio:#ec8a72; --twilio-soft:#3d221c; --ia:#a9a1f0; color-scheme:dark}}
+  --meta:#4cc3a3; --meta-soft:#163a31; --ia:#a9a1f0; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0e1513; --surface:#16201d; --fg:#e4ece9; --muted:#93a39e; --line:#2a3833;
-  --meta:#4cc3a3; --meta-soft:#163a31; --twilio:#ec8a72; --twilio-soft:#3d221c; --ia:#a9a1f0; color-scheme:dark}
+  --meta:#4cc3a3; --meta-soft:#163a31; --ia:#a9a1f0; color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0}
 img{max-width:100%}
@@ -42,12 +42,10 @@ input[type=number]{width:100%;font-family:var(--font-num);font-size:.92rem;paddi
 input:focus-visible,button:focus-visible{outline:2px solid var(--meta);outline-offset:2px}
 details{border-top:1px solid var(--line);padding-top:14px}
 summary{cursor:pointer;font-weight:600;margin-bottom:10px}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media (max-width:460px){.cards{grid-template-columns:1fr}}
 .card{border-radius:8px;padding:14px 16px;border:1px solid var(--line)}
-.card.meta{background:var(--meta-soft)} .card.twilio{background:var(--twilio-soft)}
+.card.meta{background:var(--meta-soft)}
 .card .lbl{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
-.card.meta .lbl{color:var(--meta)} .card.twilio .lbl{color:var(--twilio)}
+.card.meta .lbl{color:var(--meta)}
 .card .big{font-family:var(--font-num);font-size:1.7rem;font-weight:600;font-variant-numeric:tabular-nums;margin:4px 0 0}
 .card .sub{color:var(--muted);font-size:.82rem;font-family:var(--font-num)}
 .verdict{margin:14px 0 4px;font-weight:500}
@@ -79,7 +77,7 @@ textarea{width:100%;font-family:var(--font-num);font-size:.8rem;margin-top:8px}
 <div class="wrap">
   <header>
     <h1>Costo del bot de reclamos en WhatsApp</h1>
-    <p>Compará lo que pagás por mes conectando directo a la API de Meta o pasando por Twilio, con las reglas vigentes desde el 1 de octubre de 2026 para números de Argentina. Los valores cargados son un ejemplo: cambialos por los de tu cliente.</p>
+    <p>Calculá lo que pagás por mes conectando directo a la API de Meta, con las reglas vigentes desde el 1 de octubre de 2026 para números de Argentina. Los valores cargados son un ejemplo: cambialos por los de tu cliente.</p>
   </header>
 
   <div class="grid">
@@ -106,7 +104,6 @@ textarea{width:100%;font-family:var(--font-num);font-size:.8rem;margin-top:8px}
           <div class="field"><label for="tUtil">Meta: servicio y utilidad (Argentina)</label><input type="number" id="tUtil" min="0" step="0.0001" value="0.026"></div>
           <div class="field"><label for="tMkt">Meta: marketing (Argentina)</label><input type="number" id="tMkt" min="0" step="0.0001" value="0.0618"></div>
           <div class="field"><label for="gratis">Respuestas gratis por número por mes</label><input type="number" id="gratis" min="0" step="1" value="1000"></div>
-          <div class="field"><label for="tTwilio">Twilio por mensaje<small>se cobra entrante y saliente</small></label><input type="number" id="tTwilio" min="0" step="0.0001" value="0.005"></div>
           <div class="field"><label for="tokens">Tokens por respuesta del bot</label><input type="number" id="tokens" min="0" step="1" value="410"></div>
           <div class="field"><label for="tIA">Modelo de IA: USD por 1.000 tokens<small>Claude Haiku 5.5, combinado</small></label><input type="number" id="tIA" min="0" step="0.000001" value="0.000134"></div>
         </fieldset>
@@ -115,21 +112,17 @@ textarea{width:100%;font-family:var(--font-num);font-size:.8rem;margin-top:8px}
 
     <section class="panel" aria-labelledby="h-res" aria-live="polite">
       <h2 id="h-res">Resultado mensual</h2>
-      <div class="cards">
-        <div class="card meta"><div class="lbl">Meta directo</div><p class="big" id="totMeta">—</p><div class="sub" id="perMeta"></div></div>
-        <div class="card twilio"><div class="lbl">Con Twilio</div><p class="big" id="totTwilio">—</p><div class="sub" id="perTwilio"></div></div>
-      </div>
+      <div class="card meta"><div class="lbl">Meta directo</div><p class="big" id="totMeta">—</p><div class="sub" id="perMeta"></div></div>
       <p class="verdict" id="verdict"></p>
 
       <div class="bars" aria-hidden="true">
         <div class="bar-row"><span>Meta directo</span><div class="track" id="barMeta"></div></div>
-        <div class="bar-row"><span>Con Twilio</span><div class="track" id="barTwilio"></div></div>
       </div>
-      <div class="legend"><span><i style="background:var(--meta)"></i>Tarifa de Meta</span><span><i style="background:var(--twilio)"></i>Recargo de Twilio</span><span><i style="background:var(--ia)"></i>Modelo de IA</span></div>
+      <div class="legend"><span><i style="background:var(--meta)"></i>Tarifa de Meta</span><span><i style="background:var(--ia)"></i>Modelo de IA</span></div>
 
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Concepto</th><th>Cantidad</th><th>Meta directo</th><th>Con Twilio</th></tr></thead>
+          <thead><tr><th>Concepto</th><th>Cantidad</th><th>Meta directo</th></tr></thead>
           <tbody id="tbody"></tbody>
         </table>
       </div>
@@ -143,14 +136,14 @@ textarea{width:100%;font-family:var(--font-num);font-size:.8rem;margin-top:8px}
   </div>
 
   <div class="notes">
-    <p><strong>Cómo se calcula.</strong> Los mensajes de los vecinos son gratis para Meta. Las respuestas del bot dentro de las 24 horas son mensajes de servicio: gratis hasta 1.000 por número y por mes, después a la tarifa de utilidad. Los avisos de utilidad (plantillas) se cobran desde el primero. Twilio suma su tarifa a cada mensaje que entra y que sale, además de lo de Meta.</p>
+    <p><strong>Cómo se calcula.</strong> Los mensajes de los vecinos son gratis para Meta. Las respuestas del bot dentro de las 24 horas son mensajes de servicio: gratis hasta 1.000 por número y por mes, después a la tarifa de utilidad. Los avisos de utilidad (plantillas) se cobran desde el primero.</p>
     <p><strong>Supuestos de la calculadora.</strong> Las respuestas se reparten parejo entre los números. No incluye hosting del bot, descuentos por volumen de Meta, mensajes fallidos ni impuestos. Las tarifas de Meta para Argentina salen de fuentes que consultaron su tarjeta de tarifas (octubre de 2026); verificalas en la tarjeta oficial antes de cotizar.</p>
   </div>
 </div>
 
 <script>
 (function(){
-  const ids=["edificios","reclamos","intercambios","numeros","avisos","marketing","tUtil","tMkt","gratis","tTwilio","tokens","tIA"];
+  const ids=["edificios","reclamos","intercambios","numeros","avisos","marketing","tUtil","tMkt","gratis","tokens","tIA"];
   const el=id=>document.getElementById(id);
   const num=id=>{const v=parseFloat(el(id).value);return isFinite(v)&&v>=0?v:0};
   const usd=v=>"USD "+v.toLocaleString("es-AR",{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -168,52 +161,41 @@ textarea{width:100%;font-family:var(--font-num);font-size:.8rem;margin-top:8px}
     const respCobradas=Math.max(0,respuestas-gratis);
     const avisos=reclamosMes*num("avisos");
     const mkt=num("marketing");
-    const tU=num("tUtil"),tM=num("tMkt"),tT=num("tTwilio");
+    const tU=num("tUtil"),tM=num("tMkt");
 
     const mServ=respCobradas*tU, mAvisos=avisos*tU, mMkt=mkt*tM;
     const meta=mServ+mAvisos+mMkt;
-    const msgsTwilio=entrantes+respuestas+avisos+mkt;
-    const twilio=msgsTwilio*tT;
     const ia=respuestas*num("tokens")*num("tIA")/1000;
 
-    const totMeta=meta+ia, totTw=meta+twilio+ia;
+    const totMeta=meta+ia;
     el("totMeta").textContent=usd(totMeta);
-    el("totTwilio").textContent=usd(totTw);
     el("perMeta").textContent=ed>0?usd(totMeta/ed)+" por edificio":"";
-    el("perTwilio").textContent=ed>0?usd(totTw/ed)+" por edificio":"";
 
-    const diff=totTw-totMeta;
-    let v;
-    if(totMeta===0&&totTw===0) v="Con estos números no hay costo de mensajería.";
-    else if(totMeta===0) v="Meta directo sale gratis en este volumen; Twilio agrega "+usd(diff)+" por mes.";
-    else v="Twilio cuesta "+usd(diff)+" más por mes ("+Math.round(diff/totMeta*100)+"% sobre Meta directo).";
-    if(respuestas>0&&respCobradas===0) v+=" Las respuestas del bot entran en las gratuitas ("+int(respuestas)+" de "+int(gratis)+").";
+    let v=totMeta===0?"Con estos números no hay costo de mensajería.":"";
+    if(respuestas>0&&respCobradas===0) v+=(v?" ":"")+"Las respuestas del bot entran en las gratuitas ("+int(respuestas)+" de "+int(gratis)+").";
     el("verdict").textContent=v;
 
-    const max=Math.max(totTw,0.0001);
+    const max=Math.max(totMeta,0.0001);
     const seg=(w,c)=>`<div class="seg" style="width:${w/max*100}%;background:var(${c})"></div>`;
     el("barMeta").innerHTML=seg(meta,"--meta")+seg(ia,"--ia");
-    el("barTwilio").innerHTML=seg(meta,"--meta")+seg(twilio,"--twilio")+seg(ia,"--ia");
 
     const rows=[
-      ["Mensajes de vecinos",entrantes,0,entrantes*tT],
-      ["Respuestas del bot (gratis)",respuestas-respCobradas,0,(respuestas-respCobradas)*tT],
-      ["Respuestas del bot (cobradas)",respCobradas,mServ,mServ+respCobradas*tT],
-      ["Avisos de utilidad",avisos,mAvisos,mAvisos+avisos*tT],
-      ["Marketing",mkt,mMkt,mMkt+mkt*tT],
-      ["Modelo de IA",respuestas,ia,ia]
+      ["Mensajes de vecinos",entrantes,0],
+      ["Respuestas del bot (gratis)",respuestas-respCobradas,0],
+      ["Respuestas del bot (cobradas)",respCobradas,mServ],
+      ["Avisos de utilidad",avisos,mAvisos],
+      ["Marketing",mkt,mMkt],
+      ["Modelo de IA",respuestas,ia]
     ];
-    el("tbody").innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td class="n">${int(r[1])}</td><td class="n">${usd(r[2])}</td><td class="n">${usd(r[3])}</td></tr>`).join("")+
-      `<tr class="total"><td>Total por mes</td><td></td><td class="n">${usd(totMeta)}</td><td class="n">${usd(totTw)}</td></tr>`;
+    el("tbody").innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td class="n">${int(r[1])}</td><td class="n">${usd(r[2])}</td></tr>`).join("")+
+      `<tr class="total"><td>Total por mes</td><td></td><td class="n">${usd(totMeta)}</td></tr>`;
 
     lastSummary=`Costo mensual del bot de reclamos en WhatsApp (Argentina, reglas desde 1/10/2026)
 - ${int(ed)} edificios, ${int(rec)} reclamos/edificio/mes, ${int(inter)} intercambios por reclamo, ${int(nums)} número(s)
 - Respuestas del bot: ${int(respuestas)} (${int(respCobradas)} cobradas, ${int(gratis)} gratis)
 - Avisos de utilidad: ${int(avisos)} | Marketing: ${int(mkt)}
 Meta directo: ${usd(totMeta)}/mes${ed>0?" ("+usd(totMeta/ed)+" por edificio)":""}
-Con Twilio: ${usd(totTw)}/mes${ed>0?" ("+usd(totTw/ed)+" por edificio)":""}
-Diferencia: ${usd(diff)}/mes
-Tarifas: Meta servicio/utilidad ${tU}, marketing ${tM}; Twilio ${tT} por mensaje. No incluye hosting ni impuestos.`;
+Tarifas: Meta servicio/utilidad ${tU}, marketing ${tM}. No incluye hosting ni impuestos.`;
 
     try{const s={};ids.forEach(i=>s[i]=el(i).value);localStorage.setItem("calc-wa",JSON.stringify(s))}catch(e){}
   }
